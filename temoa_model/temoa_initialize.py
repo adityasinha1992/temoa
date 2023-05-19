@@ -1008,14 +1008,35 @@ DemandActivity constraint. It returns a tuple of the form:
 and "first_d" are the reference season and time-of-day, respectively used to
 ensure demand activity remains consistent across time slices.
 """
-	first_s = M.time_season.first()
-	first_d = M.time_of_day.first()
+	eps = 0.000001
+
+
 	for r,p,t,v,dem in M.ProcessInputsByOutput.keys():
-		if dem in M.commodity_demand and t not in M.tech_annual:
-			for s in M.time_season:
-				for d in M.time_of_day:
-					if s != first_s or d != first_d:
-						yield (r,p,s,d,t,v,dem,first_s,first_d)
+		# No need for constraint if dem is not a demand commodity or
+		# if t is in tech_annual.
+		if (dem not in M.commodity_demand) or (t in M.tech_annual):
+			continue
+
+
+		# Find the first time step where the DSD is not 0
+		# Set the time_season and time_of_day to s0 and d0.
+		for s0 in M.time_season:
+			for d0 in M.time_of_day:
+				if (r,p,s0,d0,dem) in M.DemandSpecificDistribution.sparse_keys():
+					try:
+						if M.DemandSpecificDistribution[r,p,s0,d0,dem] > eps:
+							break
+					except:
+						continue
+			else:
+			 	continue
+			break
+
+		# Start yielding the constraint indices
+		for s in M.time_season:
+			for d in M.time_of_day:
+				if s != s0 or d != d0:
+					yield (r,p,s,d,t,v,dem,s0,d0)
 
 def DemandConstraintIndices ( M ):
 	used_dems = set((r,dem) for r, p, dem in M.Demand.sparse_iterkeys())
