@@ -8,11 +8,11 @@
 # Input File (Mandatory) 
 # Input can be a .sqlite or .dat file
 # Both relative path and absolute path are accepted
---input=data_files/temoa_utopia.sqlite
+--input=data_files/US_9R_8D_FixBLNDDEMS.sqlite
 
 # Output File (Mandatory)
 # The output file must be a existing .sqlite file
---output=data_files/temoa_utopia.sqlite
+--output=data_files/US_9R_8D_FixBLNDDEMS.sqlite
 
 # Scenario Name (Mandatory) 
 # This scenario name is used to store results within the output .sqlite file
@@ -25,26 +25,26 @@
 # Solve Myopically (Optional)
 # Allows user to solve one model time period at a time, sequentially
 # Default operation is "perfect foresight"
-#--myopic
-#--myopic_periods=2
+--myopic
+--myopic_periods=1
 #--keep_myopic_databases
 
 # Report Duals (Optional) 
 # Store Duals results in the output .sqlite file
-#--saveDUALS
+--saveDUALS
 
 # Spreadsheet Output (Optional) 
 # Direct model output to a spreadsheet
 # Scenario name specified above is used to name the spreadsheet
---saveEXCEL
+#--saveEXCEL
 
 # Save the log file output (Optional)
 # This is the same output provided to the shell
---saveTEXTFILE
+#--saveTEXTFILE
 
 # Solver-related arguments (Optional)
 #--neos                            # Optional, specify if you want to use NEOS server to solve
-#--solver=cplex                    # Optional, indicate the solver
+--solver=gurobi                    # Optional, indicate the solver
 #--keep_pyomo_lp_file             # Optional, generate Pyomo-compatible LP file
 
 # Modeling-to-Generate Alternatives (Optional)
