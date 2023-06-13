@@ -131,14 +131,14 @@ class TemoaSolver(object):
 			self.optimizer = pyomo.opt.SolverManagerFactory('neos')
 		else:
 			self.optimizer = SolverFactory( self.options.solver )
-			# if self.options.solver=='gurobi':
-			#	self.optimizer.options['threads'] = 4
-			#	self.optimizer.options['method'] = 2
-			#	self.optimizer.options['crossover'] = 0
+			if self.options.solver=='gurobi':
+				self.optimizer.options['threads'] = 4
+				self.optimizer.options['method'] = 2
+				self.optimizer.options['crossover'] = 0
 			# 	self.optimizer.options['BarConvTol'] = 1.e-5
 			# 	self.optimizer.options['FeasibilityTol'] = 1.e-6
 			# 	self.optimizer.options['PreDual'] = 0
-			#	self.optimizer.options['BarHomogeneous'] = 1
+				self.optimizer.options['BarHomogeneous'] = 1
 
 		if self.optimizer:
 			pass
