@@ -358,7 +358,7 @@ class TemoaSolverInstance(object):
 			#self.model.rc = Suffix(direction=Suffix.IMPORT)
 			#self.model.slack = Suffix(direction=Suffix.IMPORT)
 
-			self.instance = self.model.create_instance( modeldata )
+			self.instance = self.model.create_instance( modeldata, report_timing=True )
 			yield '\t\t\t\t[%8.2f]\n' % duration()
 			SE.write( '\r[%8.2f]\n' % duration() )
 			self.txt_file.write( '[%8.2f]\n' % duration() )

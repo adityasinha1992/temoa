@@ -1022,9 +1022,9 @@ ensure demand activity remains consistent across time slices.
 		# Set the time_season and time_of_day to s0 and d0.
 		for s0 in M.time_season:
 			for d0 in M.time_of_day:
-				if (r,p,s0,d0,dem) in M.DemandSpecificDistribution.sparse_keys():
+				if (r,s0,d0,dem) in M.DemandSpecificDistribution.sparse_keys():
 					try:
-						if M.DemandSpecificDistribution[r,p,s0,d0,dem] > eps:
+						if M.DemandSpecificDistribution[r,s0,d0,dem] > eps:
 							break
 					except:
 						continue
