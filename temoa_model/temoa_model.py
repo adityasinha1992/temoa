@@ -45,6 +45,7 @@ def temoa_create_model(name="Temoa"):
     M.time_exist = Set(ordered=True) 
     M.time_future = Set(ordered=True)
     M.time_optimize = Set(ordered=True, initialize=init_set_time_optimize)
+
     # Define time period vintages to track capacity installation
     M.vintage_exist = Set(ordered=True, initialize=init_set_vintage_exist)
     M.vintage_optimize = Set(ordered=True, initialize=init_set_vintage_optimize)
@@ -117,7 +118,7 @@ def temoa_create_model(name="Temoa"):
     M.PeriodLength = Param(M.time_optimize, initialize=ParamPeriodLength)
     M.SegFrac = Param(M.time_season, M.time_of_day)
     M.validate_SegFrac = BuildAction(rule=validate_SegFrac)
-
+    
     # Define demand- and resource-related parameters
     M.DemandDefaultDistribution = Param(M.time_season, M.time_of_day, mutable=True)
     M.DemandSpecificDistribution = Param(
@@ -221,6 +222,8 @@ def temoa_create_model(name="Temoa"):
     M.EmissionActivity = Param(M.EmissionActivity_reitvo)
     M.MinGenGroupWeight = Param(M.RegionalIndices, M.tech_groups, M.groups, default = 0)
     M.MinGenGroupTarget = Param(M.time_optimize, M.groups)
+    M.MinAnnualCapacityFactor = Param(M.RegionalGlobalIndices, M.time_optimize, M.tech_all, M.commodity_carrier)
+    M.MaxAnnualCapacityFactor = Param(M.RegionalGlobalIndices, M.time_optimize, M.tech_all, M.commodity_carrier)
     M.LinkedTechs = Param(M.RegionalIndices, M.tech_all, M.commodity_emissions)
 
     # Define parameters associated with electric sector operation
@@ -393,13 +396,13 @@ def temoa_create_model(name="Temoa"):
         M.RampConstraintDay_rpsdtv, rule=RampDownDay_Constraint
     )
 
-    M.RampConstraintSeason_rpstv = Set(dimen=5, initialize=RampConstraintSeasonIndices)
-    M.RampUpConstraintSeason = Constraint(
-        M.RampConstraintSeason_rpstv, rule=RampUpSeason_Constraint
-    )
-    M.RampDownConstraintSeason = Constraint(
-        M.RampConstraintSeason_rpstv, rule=RampDownSeason_Constraint
-    )
+    # M.RampConstraintSeason_rpstv = Set(dimen=5, initialize=RampConstraintSeasonIndices)
+    # M.RampUpConstraintSeason = Constraint(
+    #     M.RampConstraintSeason_rpstv, rule=RampUpSeason_Constraint
+    # )
+    # M.RampDownConstraintSeason = Constraint(
+    #     M.RampConstraintSeason_rpstv, rule=RampDownSeason_Constraint
+    # )
 
     M.RampConstraintPeriod_rptv = Set(dimen=4, initialize=RampConstraintPeriodIndices)
     M.RampUpConstraintPeriod = Constraint(
@@ -489,6 +492,20 @@ def temoa_create_model(name="Temoa"):
         M.MinCapacitySetConstraint_rp, rule=MinCapacitySet_Constraint
     )
 
+    M.MinAnnualCapacityFactorConstraint_rpt = Set(
+        dimen=4, initialize=lambda M: M.MinAnnualCapacityFactor.sparse_iterkeys()
+    )
+    M.MinAnnualCapacityFactorConstraint = Constraint(
+        M.MinAnnualCapacityFactorConstraint_rpt, rule=MinAnnualCapacityFactor_Constraint
+    )
+
+    M.MaxAnnualCapacityFactorConstraint_rpt = Set(
+        dimen=4, initialize=lambda M: M.MaxAnnualCapacityFactor.sparse_iterkeys()
+    )
+    M.MaxAnnualCapacityFactorConstraint = Constraint(
+        M.MaxAnnualCapacityFactorConstraint_rpt, rule=MaxAnnualCapacityFactor_Constraint
+    )
+        
     M.TechInputSplitConstraint_rpsditv = Set(
         dimen=7, initialize=TechInputSplitConstraintIndices
     )
@@ -549,7 +566,7 @@ def runModel():
     solver = TemoaSolver(model, dummy)
     for k in solver.createAndSolve():
         pass
-
+        
 
 if "__main__" == __name__:
     """This code only invoked when called this file is invoked directly from the
@@ -557,3 +574,5 @@ if "__main__" == __name__:
 
     dummy = ""  # If calling from command line, send empty string
     model = runModel()
+
+

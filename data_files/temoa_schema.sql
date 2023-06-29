@@ -359,6 +359,30 @@ CREATE TABLE "MaxActivity" (
 	FOREIGN KEY("periods") REFERENCES "time_periods"("t_periods"),
 	FOREIGN KEY("tech") REFERENCES "technologies"("tech")
 );
+CREATE TABLE "MinAnnualCapacityFactor" (
+	"regions"	text,
+	"periods"	integer,
+	"tech"	text,
+	"output_comm"	text,
+	"mincf"	real CHECK("mincf" >= 0 AND "mincf" <= 1),
+	"mincf_notes"	text,
+	PRIMARY KEY("regions","periods","tech"),
+	FOREIGN KEY("periods") REFERENCES "time_periods"("t_periods"),
+	FOREIGN KEY("tech") REFERENCES "technologies"("tech"),
+	FOREIGN KEY("output_comm") REFERENCES "commodities"("comm_name")
+);
+CREATE TABLE "MaxAnnualCapacityFactor" (
+	"regions"	text,
+	"periods"	integer,
+	"tech"	text,
+	"output_comm"	text,
+	"maxcf"	real CHECK("maxcf" >= 0 AND "maxcf" <= 1),
+	"maxcf_notes"	text,
+	PRIMARY KEY("regions","periods","tech"),
+	FOREIGN KEY("periods") REFERENCES "time_periods"("t_periods"),
+	FOREIGN KEY("tech") REFERENCES "technologies"("tech"),
+	FOREIGN KEY("output_comm") REFERENCES "commodities"("comm_name")
+);
 CREATE TABLE "LifetimeTech" (
 	"regions"	text,
 	"tech"	text,

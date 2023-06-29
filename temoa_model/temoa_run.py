@@ -358,7 +358,7 @@ class TemoaSolverInstance(object):
 			#self.model.rc = Suffix(direction=Suffix.IMPORT)
 			#self.model.slack = Suffix(direction=Suffix.IMPORT)
 
-			self.instance = self.model.create_instance( modeldata, report_timing=True )
+			self.instance = self.model.create_instance( modeldata )
 			yield '\t\t\t\t[%8.2f]\n' % duration()
 			SE.write( '\r[%8.2f]\n' % duration() )
 			self.txt_file.write( '[%8.2f]\n' % duration() )
@@ -388,7 +388,8 @@ class TemoaSolverInstance(object):
 				else:
 				    self.result = self.optimizer.solve( self.instance, suffixes=['dual'],# 'rc', 'slack'],
 								keepfiles=self.options.keepPyomoLP,
-								symbolic_solver_labels=self.options.keepPyomoLP )
+								symbolic_solver_labels=self.options.keepPyomoLP,
+								tee = True )
 				yield '\t\t\t\t\t\t[%8.2f]\n' % duration()
 				SE.write( '\r[%8.2f]\n' % duration() )
 				self.txt_file.write( '[%8.2f]\n' % duration() )
